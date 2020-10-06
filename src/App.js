@@ -23,12 +23,12 @@ import BackspaceIcon from "@material-ui/icons/Backspace";
 function App() {
   const [folders, setFolders] = useState([]);
   const [isLoading, setLoader] = useState(true);
-  const [open, setOpen] = React.useState(true);
 
+  //program starts from home directory.
   useEffect(() => {
     axios({
       method: "get",
-      url: "http://localhost:8080/api/folders/",
+      url: "/api/folders/",
     })
       .then((obj) => {
         setFolders(obj.data);
@@ -42,13 +42,12 @@ function App() {
 
   const classes = useStyles();
 
+  //folder mean folder name (initial path + selected folder name)
   const handleClick = (folder) => {
-    //setOpen(!open);
-    console.log(folder);
-
     axios({
       method: "get",
-      url: "http://localhost:8080/api/folders/" + "?name=" + folder,
+      // eslint-disable-next-line
+      url: "/api/folders/" + "?name=" + folder,
     })
       .then((obj) => {
         setFolders(obj.data);
@@ -62,6 +61,7 @@ function App() {
   return (
     <div className="App">
       <Container>
+        {/* Header part */}
         <Grid container spacing={3} className={classes.mainGrid}>
           <Grid item xs={12} sm={4}>
             <img src={require("./images/logo.png")} alt="logo" />
@@ -77,15 +77,19 @@ function App() {
             />
           </Grid>
         </Grid>
+        {/* Header part */}
+
         <Paper elevation={3}>
           {isLoading || folders === 0 ? (
             <LinearProgress color="secondary" />
           ) : (
+            /* List start */
             <List component="nav" aria-label="main mailbox folders">
               <ListItem>
                 <ListItemIcon>
                   <ComputerIcon />
                 </ListItemIcon>
+                {/* current path name  */}
                 <ListItemText primary={folders[0].name} />
                 <ListItemText
                   style={{ display: "flex", justifyContent: "flex-end" }}
@@ -101,9 +105,11 @@ function App() {
                 <ListItemIcon>
                   <BackspaceIcon />
                 </ListItemIcon>
+                {/* parent folder name */}
                 <ListItemText primary={folders[1].name} />
               </ListItem>
               <Divider />
+              {/* Directories data mapping*/}
               {folders.slice(2, folders.length).map((folder, index) => (
                 <React.Fragment key={index}>
                   <ListItem
@@ -122,7 +128,7 @@ function App() {
                       primary={
                         folder.size === 0
                           ? null
-                          : "Size : " + folder.size + " kb"
+                          : "Size : " + (folder.size + 1) / 1000 + " kb"
                       }
                     />
                   </ListItem>
@@ -130,6 +136,7 @@ function App() {
                 </React.Fragment>
               ))}
             </List>
+            /* List End */
           )}
         </Paper>
       </Container>
