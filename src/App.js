@@ -35,8 +35,7 @@ function App() {
         setLoader(false);
       })
       .catch((error) => {
-        setLoader(false);
-        alert("You Don't Have Permission To Access to the File");
+        alert("An Error Has Occurred, Please Check Backend Part");
       });
   }, []);
 
@@ -54,8 +53,7 @@ function App() {
         setLoader(false);
       })
       .catch((error) => {
-        setLoader(false);
-        alert("You Don't Have Permission To Access to the File");
+        alert("An Error Has Occurred, Please Check Backend Part");
       });
   };
   return (
@@ -80,34 +78,39 @@ function App() {
         {/* Header part */}
 
         <Paper elevation={3}>
-          {isLoading || folders === 0 ? (
+          {isLoading && folders.length === 0 ? (
             <LinearProgress color="secondary" />
           ) : (
             /* List start */
             <List component="nav" aria-label="main mailbox folders">
-              <ListItem>
-                <ListItemIcon>
-                  <ComputerIcon />
-                </ListItemIcon>
-                {/* current path name  */}
-                <ListItemText primary={folders[0].name} />
-                <ListItemText
-                  style={{ display: "flex", justifyContent: "flex-end" }}
-                  primary="Current Path"
-                />
-              </ListItem>
-              <Divider />
-              <ListItem
-                button
-                disabled={folders[1].name == null ? true : false}
-                onClick={() => handleClick(folders[1].name)}
-              >
-                <ListItemIcon>
-                  <BackspaceIcon />
-                </ListItemIcon>
-                {/* parent folder name */}
-                <ListItemText primary={folders[1].name} />
-              </ListItem>
+              {folders.length === 0 ? null : (
+                <>
+                  <ListItem>
+                    <ListItemIcon>
+                      <ComputerIcon />
+                    </ListItemIcon>
+                    {/* current path name  */}
+                    <ListItemText primary={folders[0].name} />
+                    <ListItemText
+                      style={{ display: "flex", justifyContent: "flex-end" }}
+                      primary="Current Path"
+                    />
+                  </ListItem>
+                  <Divider />
+                  <ListItem
+                    button
+                    disabled={folders[1].name == null ? true : false}
+                    onClick={() => handleClick(folders[1].name)}
+                  >
+                    <ListItemIcon>
+                      <BackspaceIcon />
+                    </ListItemIcon>
+                    {/* parent folder name */}
+                    <ListItemText primary={folders[1].name} />
+                  </ListItem>
+                </>
+              )}
+
               <Divider />
               {/* Directories data mapping*/}
               {folders.slice(2, folders.length).map((folder, index) => (
@@ -132,7 +135,7 @@ function App() {
                       }
                     />
                   </ListItem>
-                  {index === folders.length - 1 ? null : <Divider />}
+                  {index === folders.length ? null : <Divider />}
                 </React.Fragment>
               ))}
             </List>
